@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <img src = "back.png" id = "one"  onclick = "revealCard(this.className)" style="border:0px;margin:10px;float:left;">
+        <img src = "back.png" id = "two"  onclick = "revealCard(this.className)" style="border:0px;margin:10px;float:left;">
+        <img src = "back.png" id = "three" onclick = "revealCard(this.className)" style="border:0px;margin:10px;float:left;">
+        <img src = "back.png" id = "four"  onclick = "revealCard(this.className)" style="border:0px;margin:10px;float:left;">
+        <img src = "back.png" id = "five"  onclick = "revealCard(this.className)" style="border:0px;margin:10px;float:left;">
+        <img src = "back.png" id = "six"  onclick = "revealCard(this.className)" style="border:0px;margin:10px;float:left;">
+        <button onclick="restart()">Restart Game</button>
+    </body>
+</html>
+
+<script>
+var docIds = ["one", "two", "three", "four", "five", "six"]; 
+var cards = ['1clubs', '1hearts', '2clubs', '2hearts', '3clubs', '3hearts']; 
+let choice = []; //for matching numbers
+let temp = []; //hold full name of class that user clicked
+
+function restart(){
+    //1. flip cards back over 
+    //2. reshuffle cards
+    //3. reassign cards 
+    for(let i=0; i<cards.length; i++){
+        document.getElementById(docIds[i]).src = "back.png";
+    }
+    
+    shuffle(cards); 
+    console.log("restarte" + cards); //checking reshuffled works 
+    assignCards();
+}
+
+//Fisher-Yates Shuffle -- did not write this 
+function shuffle(array){
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    console.log("restarted")
+    return array;
+}
+
+
+function assignCards(){
+    for(let i = 0; i<docIds.length; i++){
+        document.getElementById(docIds[i]).className = cards[i];
+    }
+}
+
+function revealCard(obj){
+        temp.push(obj); //push to array 
+        choice.push(obj.substr(0,1)); //get rid of extra text for matching 
+
+        //obj = '2clubs'
+        //choice.push(obj.substr(0,1)) --- [] -> ['1clubs', '1hearts']
+
+        //change image/check if choices match
+        if(choice.length <= 2){
+            //change img
+
+            //arr = [1,2,6,8]
+            //arr.indexOf(6) - 2
+
+            // docIds = [one, two , three, four, five, ...]
+            // cards = [1clubs, 2clubs, 3hearts, 3clubs,...]
+            let i = cards.indexOf(obj);
+            document.getElementById(docIds[i]).src = cards[i]+".png";
+
+            //check if choices match
+            if(choice.length == 2 && choice[0] == choice[1]){
+                console.log("in match")
+                //pause 1.5sec
+                setTimeout(function(){
+                    let elem =document.getElementsByClassName(temp[0]);
+                    let elem1=document.getElementsByClassName(temp[1]);
+
+                    elem[0].src = "clear.png" //remove card 
+                    elem1[0].src = "clear.png" //remove cards
+
+                    choice = []; //empty two choices 
+                    temp = []; //empty temp array      
+                }, 1500);
+                
+            }else if(choice.length == 2 && choice[0] !== choice[1]){
+                console.log("hello in else if");
+
+                //delay flipping back
+            setTimeout(function(){
+                let elem = document.getElementsByClassName(temp[0]);
+                let elem1 =document.getElementsByClassName(temp[1]);
+                
+                elem[0].src = "back.png";
+                elem1[0].src = "back.png";
+
+                //empty arrays
+                choice = []; 
+                temp = [];
+            }, 1500)      }
+
+        }
+}
+
+//run once wen the webpage
+window.onload = function(){
+    shuffle(cards); 
+    console.log("first shuffle" + cards);
+    assignCards();
+}
+
+
+</script>
